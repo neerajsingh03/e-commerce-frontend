@@ -173,4 +173,16 @@ export default {
     color: white;
     border-radius: 10px 10px 0 0;
 }
+.register-page {
+  background-image: url('@/assets/loginImg2.jpg'); /* Replace with the correct path */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* Makes the background fixed */
+  height: 100vh; /* Full height of the viewport */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%; /* Ensures it takes up the full width of the viewport */
+}
 </style>
