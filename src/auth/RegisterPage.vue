@@ -99,90 +99,99 @@ export default {
 </script>
 
 <style scoped>
+/* Background styles inherited from login page */
 .register-page {
-    background-color: #f7f7f7;
-    min-height: 100vh;
+    background-image: url('@/assets/loginImg2.jpg'); /* Replace with the correct path */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* Makes the background fixed */
+    height: 100vh; /* Full height of the viewport */
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 30px;
+    width: 100%; /* Ensures it takes up the full width of the viewport */
 }
 
+/* Card container styles aligned with login container */
 .card {
+    background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent dark background */
     border-radius: 10px;
+    color: white;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .card-header {
-    background-color: #007bff;
-    color: white;
-    border-radius: 10px 10px 0 0;
+    text-align: center;
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #fff;
+    background-color: transparent; /* Blend with the card background */
+    border-bottom: none;
 }
 
-.card-header h2 {
-    margin: 0;
-    font-size: 1.8rem;
+.card-body {
+    padding: 40px;
 }
 
 .form-label {
+    color: white;
     font-weight: 500;
     font-size: 1rem;
 }
 
 .form-control {
-    border-radius: 10px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    padding: 15px;
-    font-size: 1rem;
-}
-
-.row .col-md-6 {
-    padding-right: 0 !important;
-    padding-left: 0 !important;
-}
-
-.row.g-3 {
-    gap: 1.5rem;
-}
-
-.btn-primary {
-    background-color: #007bff;
-    border: 1px solid #007bff;
-    font-size: 1.1rem;
-    font-weight: 600;
+    border-radius: 5px;
     padding: 12px;
-    border-radius: 10px;
+    margin-bottom: 20px;
+    background-color: #333; /* Match dark theme */
+    color: white;
+    border: 1px solid #555;
+}
+
+.form-control:focus {
+    box-shadow: none;
+    border-color: #0056b3;
+}
+
+/* Button styles aligned with login page */
+.btn-primary {
+    background-color: #28a745;
+    border-color: #28a745;
+    font-weight: 600;
+    border-radius: 5px;
+    padding: 12px;
     transition: background-color 0.3s ease;
 }
 
 .btn-primary:hover {
-    background-color: #0056b3;
-    border-color: #0056b3; 
+    background-color: #218838;
+    border-color: #1e7e34;
 }
-.btn-primary[data-v-7c23d420] {
-    background-color: #6483a3;
-    border: 1px solid #21476e;
-    font-size: 1.1rem;
-    font-weight: 600;
-    padding: 12px;
-    border-radius: 10px;
-    transition: background-color 0.3s ease;
+
+/* Text styles */
+.text-white {
+    color: white !important;
 }
-.card-header[data-v-7c23d420] {
-    background-color: #5d7c9d;
+
+a {
+    text-decoration: none;
     color: white;
-    border-radius: 10px 10px 0 0;
 }
-.register-page {
-  background-image: url('@/assets/loginImg2.jpg'); /* Replace with the correct path */
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed; /* Makes the background fixed */
-  height: 100vh; /* Full height of the viewport */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%; /* Ensures it takes up the full width of the viewport */
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .register-page {
+        background-attachment: scroll; /* Fallback for mobile devices */
+        padding: 20px;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
 }
 </style>
