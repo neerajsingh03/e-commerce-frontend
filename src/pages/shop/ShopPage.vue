@@ -70,7 +70,7 @@
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
           <div class="col" v-for="product in filteredProducts" :key="product.id">
             <div class="card product-card shadow-sm">
-              <img :src="product.image" class="card-img-top" alt="Product Image" />
+              <img src="../../assets/loginImg.jpg" class="card-img-top" alt="Product Image" />
               <div class="card-body">
                 <h5 class="card-title">{{ product.name }}</h5>
                 <p class="card-text">{{ product.description }}</p>
