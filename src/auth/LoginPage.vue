@@ -5,12 +5,12 @@
             <h2 class="text-center text-white mb-4">Login to Your Account</h2>
             <form @submit.prevent="handleLogin">
                 <div class="mb-4">
-                    <label for="username" class="form-label text-white">Username</label>
-                    <input type="text" id="username" class="form-control" v-model="username" placeholder="Enter your username" required />
+                    <label for="email" class="form-label text-white">Email</label>
+                    <input type="email" id="email" class="form-control" v-model="formData.email" placeholder="Enter your email" />
                 </div>
                 <div class="mb-4">
                     <label for="password" class="form-label text-white">Password</label>
-                    <input type="password" id="password" class="form-control" v-model="password" placeholder="Enter your password" required />
+                    <input type="password" id="password" class="form-control" v-model="formData.password" placeholder="Enter your password" />
                 </div>
                 <div class="d-flex justify-content-between mb-4">
                     <div>
@@ -27,22 +27,47 @@
 </template>
 
 <script>
+import apiClient from '@/service/Index';
+import { useStore } from 'vuex';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 export default {
     name: 'LoginPage',
-    data() {
-        return {
-            username: '',
+    setup() {
+        const formData = ref({
+            email: '',
             password: '',
-            rememberMe: false,
+        });
+        const router = useRouter();
+        const store = useStore();
+        const handleLogin = async () => {
+            try {
+                const response = await apiClient.post('/login', formData.value);
+                if (response.data && response.data.token && response.data.role) {
+                    store.dispatch('login', {
+                        token: response.data.token,
+                        role: response.data.role,
+                        userId: response.data.userId,
+                    });
+                    console.log(response.data);
+                    if (response.data.role === 'admin') {
+                        router.push('/admin-dashboard');
+                    } else {
+                        router.push('/');
+                    }
+                } else {
+                    console.log('something wrong');
+                }
+            } catch (error) {
+                // alert('Login failed.');
+                console.log('something wrong', error);
+            }
         };
-    },
-    methods: {
-        handleLogin() {
-            // Logic for handling the login form submission
-            console.log('Login successful for:', this.username);
-            // You can add authentication logic here
-        },
-    },
+        return {
+            handleLogin,
+            formData,
+        }
+    }
 };
 </script>
 
