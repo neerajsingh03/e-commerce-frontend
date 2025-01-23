@@ -7,7 +7,8 @@ import CategoriesPage from '@/pages/categories/CategoriesPage.vue';
 import DealsPage    from '@/pages/deals/DealsPage.vue';
 import LoginPage    from '@/auth/LoginPage.vue';
 import RegisterPage from '@/auth/RegisterPage.vue';
-import AdminMain        from '@/components/admin/AdminMain.vue'
+import AdminMain        from '@/components/admin/AdminMain.vue';
+import AddCategory            from  '@/pages/admin/categories/AddCategory.vue'
 // Define the routes
 const routes = [
   {path: '/',name: 'Home',component: HomePage},
@@ -18,6 +19,7 @@ const routes = [
   {path: '/login',name: 'login',component: LoginPage},
   {path: '/sign-up',name: 'signUp',component: RegisterPage},
   {path: '/admin-dashboard',name: 'adminDashboard',component: AdminMain},
+  {path: '/category',name: 'category',component: AddCategory},
 ];
 
 // Create the router instance

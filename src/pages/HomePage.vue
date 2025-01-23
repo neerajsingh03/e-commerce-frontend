@@ -69,7 +69,7 @@
                 <h5 class="card-title">{{ product.name }}</h5>
                 <p class="card-text">{{ product.description }}</p>
                 <p class="price">${{ product.price }}</p>
-                <button class="btn btn-primary">Add to Cart</button>
+                <button class="btn btn-primary" @click="handleSubmit">Add to Cart</button>
               </div>
             </div>
           </div>
@@ -88,27 +88,27 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'HomePage',
-  data() {
-    return {
-      products: [
-        { id: 1, name: 'Product 1', description: 'Description for product 1', price: 99.99, image: '@/assets/img1.webp' },
-        { id: 2, name: 'Product 2', description: 'Description for product 2', price: 199.99, image: '@/assets/img1.webp' },
-        { id: 3, name: 'Product 3', description: 'Description for product 3', price: 299.99, image: 'https://via.placeholder.com/150' },
-        { id: 4, name: 'Product 4', description: 'Description for product 4', price: 79.99, image: 'https://via.placeholder.com/150' },
-      ],
-      categories: [
-        { id: 1, name: 'Electronics', image: 'https://via.placeholder.com/300x200?text=Electronics', link: '#' },
-        { id: 2, name: 'Clothing', image: 'https://via.placeholder.com/300x200?text=Clothing', link: '#' },
-        { id: 3, name: 'Home Appliances', image: 'https://via.placeholder.com/300x200?text=Home+Appliances', link: '#' },
-        { id: 4, name: 'Beauty & Health', image: 'https://via.placeholder.com/300x200?text=Beauty+%26+Health', link: '#' },
-      ]
-    };
-  },
-};
+<script setup>
+import { ref} from 'vue';
+
+// Reactive state
+const products = ref([
+  { id: 1, name: 'Product 1', description: 'Description for product 1', price: 99.99, image: '@/assets/img1.webp' },
+  { id: 2, name: 'Product 2', description: 'Description for product 2', price: 199.99, image: '@/assets/img1.webp' },
+  { id: 3, name: 'Product 3', description: 'Description for product 3', price: 299.99, image: 'https://via.placeholder.com/150' },
+  { id: 4, name: 'Product 4', description: 'Description for product 4', price: 79.99, image: 'https://via.placeholder.com/150' },
+]);
+
+const categories = ref([
+  { id: 1, name: 'Electronics', image: 'https://via.placeholder.com/300x200?text=Electronics', link: '#' },
+  { id: 2, name: 'Clothing', image: 'https://via.placeholder.com/300x200?text=Clothing', link: '#' },
+  { id: 3, name: 'Home Appliances', image: 'https://via.placeholder.com/300x200?text=Home+Appliances', link: '#' },
+  { id: 4, name: 'Beauty & Health', image: 'https://via.placeholder.com/300x200?text=Beauty+%26+Health', link: '#' },
+]);
+
+
 </script>
+
 
 
 <style scoped>

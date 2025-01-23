@@ -83,7 +83,7 @@
                     <div class="dropdown-menu dropdown-menu-end bg-light border-0 rounded-0 rounded-bottom m-0">
                         <a href="#" class="dropdown-item">My Profile</a>
                         <a href="#" class="dropdown-item">Settings</a>
-                        <a href="#" class="dropdown-item">Log Out</a>
+                        <a href="#" class="dropdown-item" @click="handleLogout" v-if="token">Log Out</a>
                     </div>
                 </div>
             </div>
@@ -93,8 +93,39 @@
            
     </div>
 </template>
+
 <script>
+import apiClient from '@/service/Index';
+import { useStore } from 'vuex';
+import { computed } from 'vue';
+import { useRouter } from 'vue-router';
 export default {
-    name: 'NavbarAdmin'
-}
+    name: 'NavbarAdmin',
+
+    setup() {
+        const store = useStore();
+        const router = useRouter();
+        const handleLogout = async () => {
+            try {
+                const response = await apiClient.post('/logout');
+                console.log(response.data);
+                if (response.data.status === 200) {
+                    store.dispatch('logout');
+                    router.push('/');
+                    alert('Logout successfully');
+                }
+            } catch (error) {
+                
+               console.log('something wrong',error);
+            }
+
+        };
+         const token = computed(() => store.getters.getToken);
+        return {
+            handleLogout,
+            token, 
+        }
+    }
+};
 </script>
+

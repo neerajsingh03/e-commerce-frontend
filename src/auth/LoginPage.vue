@@ -59,7 +59,7 @@ export default {
                     console.log('something wrong');
                 }
             } catch (error) {
-                // alert('Login failed.');
+                alert('Invalid login details');
                 console.log('something wrong', error);
             }
         };

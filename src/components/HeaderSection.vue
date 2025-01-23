@@ -68,12 +68,14 @@ export default {
         const handleLogout = async () => {
             try {
                 const response = await apiClient.post('/logout');
+                console.log(response.data);
                 if (response.data.status === 200) {
                     store.dispatch('logout');
                     router.push('/');
-                     alert('Logout successfully');
+                    alert('Logout successfully');
                 }
             } catch (error) {
+                
                console.log('something wrong',error);
             }
 
