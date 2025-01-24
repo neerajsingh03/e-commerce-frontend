@@ -8,7 +8,7 @@ import CategoriesPage from '@/pages/categories/CategoriesPage.vue';
 import DealsPage    from '@/pages/deals/DealsPage.vue';
 import LoginPage    from '@/auth/LoginPage.vue';
 import RegisterPage from '@/auth/RegisterPage.vue';
-import AdminMain        from '@/components/admin/AdminMain.vue';
+import AdminMain        from '@/pages/admin/adminDashboard/AdminMain.vue';
 import AddCategory            from  '@/pages/admin/categories/AddCategory.vue';
 import AddSubCategory   from '@/pages/admin/categories/AddSubCategory.vue';
 
