@@ -20,3 +20,8 @@
     </div>
 </div>
 </template>
+<style scoped>
+.container-fluid.pt-4.px-4 {
+    margin-top: 210px;
+}
+</style>

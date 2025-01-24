@@ -40,16 +40,21 @@
     </section>
 
     <!-- Category Section -->
+    <div v-if="loading" class="text-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
     <section class="categories py-5">
       <div class="container">
         <h2 class="text-center mb-4">Shop by Categories</h2>
         <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
           <div class="col" v-for="category in categories" :key="category.id">
             <div class="card category-card">
-              <img src="../assets/loginImg.jpg" class="card-img-top" alt="Category Image">
+              <img :src="getImageUrl(category.image)" class="card-img-top" alt="Category Image">
               <div class="card-body text-center">
                 <h5 class="card-title">{{ category.name }}</h5>
-                <a :href="category.link" class="btn btn-primary">Shop Now</a>
+                <a :href="category.link" class="btn btn-primary" @click="handleFetchSubCategory(category.id)">Shop Now</a>
               </div>
             </div>
           </div>
@@ -69,7 +74,7 @@
                 <h5 class="card-title">{{ product.name }}</h5>
                 <p class="card-text">{{ product.description }}</p>
                 <p class="price">${{ product.price }}</p>
-                <button class="btn btn-primary" @click="handleSubmit">Add to Cart</button>
+                <button class="btn btn-primary">Add to Cart</button>
               </div>
             </div>
           </div>
@@ -88,23 +93,68 @@
   </div>
 </template>
 
-<script setup>
-import { ref} from 'vue';
+<script>
+import { ref,onMounted} from 'vue';
+import apiClient from '@/service/Index';
 
-// Reactive state
-const products = ref([
-  { id: 1, name: 'Product 1', description: 'Description for product 1', price: 99.99, image: '@/assets/img1.webp' },
-  { id: 2, name: 'Product 2', description: 'Description for product 2', price: 199.99, image: '@/assets/img1.webp' },
-  { id: 3, name: 'Product 3', description: 'Description for product 3', price: 299.99, image: 'https://via.placeholder.com/150' },
-  { id: 4, name: 'Product 4', description: 'Description for product 4', price: 79.99, image: 'https://via.placeholder.com/150' },
-]);
+export default {
+    name:'HomePage',
+    setup(){
+      // Reactive state
+      const categories = ref([]);
+      
+      let loading = ref(true);
+      const products = ref([
+        { id: 1, name: 'Product 1', description: 'Description for product 1', price: 99.99, image: '@/assets/img1.webp' },
+        { id: 2, name: 'Product 2', description: 'Description for product 2', price: 199.99, image: '@/assets/img1.webp' },
+        { id: 3, name: 'Product 3', description: 'Description for product 3', price: 299.99, image: 'https://via.placeholder.com/150' },
+        { id: 4, name: 'Product 4', description: 'Description for product 4', price: 79.99, image: 'https://via.placeholder.com/150' },
+      ]);
+      onMounted (async() => {
+        fetchCategories();
 
-const categories = ref([
-  { id: 1, name: 'Electronics', image: 'https://via.placeholder.com/300x200?text=Electronics', link: '#' },
-  { id: 2, name: 'Clothing', image: 'https://via.placeholder.com/300x200?text=Clothing', link: '#' },
-  { id: 3, name: 'Home Appliances', image: 'https://via.placeholder.com/300x200?text=Home+Appliances', link: '#' },
-  { id: 4, name: 'Beauty & Health', image: 'https://via.placeholder.com/300x200?text=Beauty+%26+Health', link: '#' },
-]);
+      });
+      const fetchCategories = async ()=> {
+        try {
+          const response = await apiClient.get('/fetch-categories');
+          if (response.data.success) {
+            loading.value= false;
+            categories.value = response.data.allCategories;
+          }
+        } catch (error) {
+          console.error('Error fetching categories:', error);
+        }
+      };
+      const getImageUrl = (imagePath) => {
+        return `http://127.0.0.1:8000/${imagePath}`;
+      };
+      const  handleFetchSubCategory = async (productId) => {
+        try {
+          const responseSubCategory = await apiClient.get(`fetch-sub-caregory/${productId}`);
+          if(responseSubCategory.data.success)
+          {
+              console.log(responseSubCategory.data);
+          }
+        } catch (error) {
+          console.log('something wrong' , error);
+        }
+
+        //  alert(`hey!! guys this is prodcut Id ${productId}`);
+        //  console.log(`hey!! guys this is prodcut Id ${productId}`)
+      };
+       return {
+        products,
+        // categories,
+        categories,
+        getImageUrl,
+        loading,
+        handleFetchSubCategory
+      };
+    }
+}
+
+
+
 
 
 </script>
@@ -146,7 +196,7 @@ const categories = ref([
 
 .card.category-card img {
   border-radius: 10px;
-  max-height: 200px;
+  max-height: 167px;
   object-fit: cover;
 }
 
@@ -237,4 +287,5 @@ const categories = ref([
   background-color: #218838;
   border-color: #1e7e34;
 }
+
 </style>
