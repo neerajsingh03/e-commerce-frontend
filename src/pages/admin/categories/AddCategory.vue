@@ -54,7 +54,7 @@ export default {
         })
         const handleCategoryImage = ((e) => {
             const image = e.target.files[0];
-            if (image) {
+            if (image) { 
                 formData.image = image;
             }
             console.log(image);

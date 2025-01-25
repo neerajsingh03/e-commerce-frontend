@@ -84,7 +84,7 @@
 
 <script>
 export default {
-    name: 'CategoriesPage',
+    name: 'Index',
     data() {
         return {
             searchQuery: '',

@@ -12,11 +12,11 @@
 import { computed } from 'vue';
 import { useStore } from 'vuex';
 
-import FooterSection from './components/FooterSection.vue';
-import HeaderSection from './components/HeaderSection.vue';
-import SidebarAdmin from '@/components/admin/SidebarAdmin.vue';
-import NavbarAdmin from './components/admin/NavbarAdmin.vue';
-import FooterAdmin from './components/admin/FooterAdmin.vue';
+import FooterSection from './components/website/Footer.vue';
+import HeaderSection from './components/website/Header.vue';
+import SidebarAdmin from '@/components/admin/Sidebar.vue';
+import NavbarAdmin from './components/admin/Navbar.vue';
+import FooterAdmin from './components/admin/Footer.vue';
 
 export default {
   name: 'App',

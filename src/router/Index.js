@@ -3,12 +3,12 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Cookies from "js-cookie";
 import HomePage from '@/pages/HomePage.vue';
 import CartPage from '@/pages/users/CartPage.vue';
-import ShopPage from  '@/pages/shop/ShopPage.vue';
-import CategoriesPage from '@/pages/categories/CategoriesPage.vue';
-import DealsPage    from '@/pages/deals/DealsPage.vue';
+import ShopPage from  '@/pages/shop/Index.vue';
+import CategoriesPage from '@/pages/categories/Index.vue';
+import DealsPage    from '@/pages/deals/Index.vue';
 import LoginPage    from '@/auth/LoginPage.vue';
 import RegisterPage from '@/auth/RegisterPage.vue';
-import AdminMain        from '@/pages/admin/adminDashboard/AdminMain.vue';
+import adminDashboard from '@/pages/admin/adminDashboard/Index.vue';
 import AddCategory            from  '@/pages/admin/categories/AddCategory.vue';
 import AddSubCategory   from '@/pages/admin/categories/AddSubCategory.vue';
 
@@ -21,7 +21,7 @@ const routes = [
   {path: '/deal',name: 'deal',component: DealsPage},
   {path: '/login',name: 'Login',component: LoginPage},
   {path: '/sign-up',name: 'signUp',component: RegisterPage},
-  {path: '/admin-dashboard',name: 'adminDashboard',component: AdminMain,meta: { requiresAuth: true, role: "admin" }},
+  {path: '/admin-dashboard',name: 'adminDashboard',component: adminDashboard,meta: { requiresAuth: true, role: "admin" }},
   {path: '/category',name: 'category',component: AddCategory,meta: { requiresAuth: true, role: "admin" }},
   {path: '/sub-category',name: 'subCategory',component: AddSubCategory,meta: { requiresAuth: true, role: "admin" }},
  
