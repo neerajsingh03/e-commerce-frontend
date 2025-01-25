@@ -1,36 +1,16 @@
 // src/router/index.js
 import { createRouter, createWebHistory } from 'vue-router';
 import Cookies from "js-cookie";
-import HomePage from '@/pages/HomePage.vue';
-import CartPage from '@/pages/users/CartPage.vue';
-import ShopPage from  '@/pages/shop/Index.vue';
-import CategoriesPage from '@/pages/categories/Index.vue';
-import DealsPage    from '@/pages/deals/Index.vue';
-import LoginPage    from '@/auth/LoginPage.vue';
-import RegisterPage from '@/auth/RegisterPage.vue';
-import adminDashboard from '@/pages/admin/adminDashboard/Index.vue';
-import AddCategory            from  '@/pages/admin/categories/AddCategory.vue';
-import AddSubCategory   from '@/pages/admin/categories/AddSubCategory.vue';
+import categoriesRoute   from '@/router/admin/Categories.js';
+import Auth              from         '@/router/auth/Auth.js';
+import websiteRoute     from '@/router/website/Website';
 
-// Define the routes
-const routes = [
-  {path: '/',name: 'Home',component: HomePage},
-  {path: '/cart',name: 'Cart',component: CartPage},
-  {path: '/shop',name: 'shopPage',component: ShopPage},
-  {path: '/categories',name: 'categories',component: CategoriesPage},
-  {path: '/deal',name: 'deal',component: DealsPage},
-  {path: '/login',name: 'Login',component: LoginPage},
-  {path: '/sign-up',name: 'signUp',component: RegisterPage},
-  {path: '/admin-dashboard',name: 'adminDashboard',component: adminDashboard,meta: { requiresAuth: true, role: "admin" }},
-  {path: '/category',name: 'category',component: AddCategory,meta: { requiresAuth: true, role: "admin" }},
-  {path: '/sub-category',name: 'subCategory',component: AddSubCategory,meta: { requiresAuth: true, role: "admin" }},
- 
-];
+let routes = [];
+routes = routes.concat(Auth,websiteRoute,categoriesRoute);
 
-// Create the router instance
 const router = createRouter({
-  history: createWebHistory(),
-  routes
+    history:createWebHistory(),
+    routes
 });
 
 router.beforeEach((to, from, next) => {

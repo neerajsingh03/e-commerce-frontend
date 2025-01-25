@@ -96,6 +96,7 @@
 <script>
 import { ref,onMounted} from 'vue';
 import apiClient from '@/service/Index';
+import {getImageUrl} from '@/utils/Helper.js';
 
 export default {
     name:'HomePage',
@@ -125,15 +126,14 @@ export default {
           console.error('Error fetching categories:', error);
         }
       };
-      const getImageUrl = (imagePath) => {
-        return `http://127.0.0.1:8000/${imagePath}`;
-      };
       const  handleFetchSubCategory = async (productId) => {
+
         try {
           const responseSubCategory = await apiClient.get(`fetch-sub-caregory/${productId}`);
           if(responseSubCategory.data.success)
           {
               console.log(responseSubCategory.data);
+              
           }
         } catch (error) {
           console.log('something wrong' , error);
