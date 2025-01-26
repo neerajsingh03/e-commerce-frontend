@@ -70,7 +70,7 @@ export default {
                 const response = await apiClient.post('/logout');
                 console.log(response.data);
                 if (response.data.status === 200) {
-                    store.dispatch('logout');
+                    store.dispatch('auth/logout');
                     router.push('/');
                     alert('Logout successfully');
                 }
@@ -80,7 +80,7 @@ export default {
             }
 
         };
-         const token = computed(() => store.getters.getToken);
+        const token = computed(() => store.getters['auth/getToken']);
         return {
             handleLogout,
             token, 

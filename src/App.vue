@@ -1,5 +1,4 @@
 <template>
-  <!-- Render HeaderSection and FooterSection for non-admin users -->
   <HeaderSection v-if="role !== 'admin'" />
   <SidebarAdmin v-if="role === 'admin'" />
   <NavbarAdmin v-if="role === 'admin'" />
@@ -28,13 +27,12 @@ export default {
     FooterAdmin,
   },
   setup() {
-    const store = useStore(); // Access the Vuex store
-
-    // Get role from the Vuex store using a computed property
-    const role = computed(() => store.getters.getRole);
+    const store = useStore(); 
+    const role = computed(() => store.getters['auth/getRole']);
+    console.log('Role in App:', role.value); // For debugging
 
     return {
-      role, // Return role to use it in the template
+      role, 
     };
   },
 };
