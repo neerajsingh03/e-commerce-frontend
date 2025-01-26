@@ -1,7 +1,7 @@
 const websiteRoute = [
     {   path: '/',
         name: 'Home',
-        component:() => import('@/pages/HomePage.vue'),
+        component:() => import('@/pages/website/home/Index.vue'),
     },
     {
         path: '/cart',
@@ -11,17 +11,17 @@ const websiteRoute = [
     {
         path: '/shop',
         name: 'shopPage',
-        component: () => import('@/pages/shop/Index.vue'),
+        component: () => import('@/pages/website/shop/Index.vue'),
     },
     {
         path: '/categories',
         name: 'categories',
-        component: () => import('@/pages/categories/Index.vue'),
+        component: () => import('@/pages/website/categories/Index.vue'),
     },
     {
         path: '/deal',
         name: 'deal',
-        component: () => import('@/pages/deals/Index.vue')
+        component: () => import('@/pages/website/deals/Index.vue')
     },
 ]
 export default websiteRoute;

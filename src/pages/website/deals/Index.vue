@@ -16,7 +16,7 @@
             <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
                 <div class="col" v-for="deal in deals" :key="deal.id">
                     <div class="card deal-card shadow-lg">
-                        <img src="../../assets/loginImg.jpg" class="card-img-top" alt="Deal Image" />
+                        <img src="@/assets/loginImg.jpg" class="card-img-top" alt="Deal Image" />
                         <div class="card-body">
                             <h5 class="card-title">{{ deal.name }}</h5>
                             <p class="card-text">{{ deal.description }}</p>

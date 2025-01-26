@@ -3,12 +3,12 @@ const auth = [
         path: '/login',
         name: 'Login',
         // component: LoginPage
-        component: () => import ('@/auth/LoginPage.vue'),
+        component: () => import ('@/pages/auth/LoginPage.vue'),
     },
     { path: '/sign-up',
       name: 'signUp',
         //   component: RegisterPage
-      component: () => import ('@/auth/RegisterPage.vue'),
+      component: () => import ('@/pages/auth/RegisterPage.vue'),
     },
 ];
 export default auth;

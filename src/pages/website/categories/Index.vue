@@ -68,7 +68,7 @@
                 <!-- Category Item -->
                 <div class="col" v-for="category in filteredCategories" :key="category.id">
                     <div class="card category-card shadow-sm">
-                        <img src="../../assets/loginImg.jpg" class="card-img-top" alt="Category Image">
+                        <img src="@/assets/loginImg.jpg" class="card-img-top" alt="Category Image">
                         <div class="card-body text-center">
                             <h5 class="card-title">{{ category.name }}</h5>
                             <p class="card-text">{{ category.description }}</p>
