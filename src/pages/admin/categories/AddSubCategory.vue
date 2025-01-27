@@ -81,7 +81,8 @@ export default {
                 formData.value.name = "";
                 formData.value.description = "";
                 formData.value.category_id = "";
-                formData.value.image = null;
+                // formData.value.image = null;
+                 document.getElementById('image').value = '';
               } catch (error) {
                 console.error("Error adding subcategory:", error);
                 alert("Failed to add subcategory.");

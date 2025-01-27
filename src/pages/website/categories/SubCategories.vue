@@ -45,7 +45,7 @@
             <div class="row">
                 <!-- Search Bar -->
                 <div class="col-lg-8">
-                    <input type="text" class="form-control" v-model="searchQuery" placeholder="Search Categories" />
+                    <input type="text" class="form-control" v-model="searchQuery" @keyup="searchCategory" placeholder="Search Categories" />
                 </div>
                 <!-- Category Filter -->
                 <div class="col-lg-4">
@@ -68,126 +68,91 @@
     <section class="categories py-5">
         <div class="container">
             <h2 class="text-center mb-5">Shop by Categories</h2>
-            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4" v-if="subCategories.length > 0">
                 <!-- Category Item -->
-                <!-- <div class="col" v-for="category in filteredCategories" :key="category.id">
-                    <div class="card category-card shadow-sm">
-                        <img src="@/assets/loginImg.jpg" class="card-img-top" alt="Category Image">
-                        <div class="card-body text-center">
-                            <h5 class="card-title">{{ category.name }}</h5>
-                            <a :href="category.link" class="btn btn-category">Shop Now</a>
-                        </div>
-                    </div>
-                </div> -->
-                <div class="col" v-for="category in categories" :key="category.id">
+                <div class="col" v-for="category in subCategories" :key="category.id">
                     <div class="card category-card shadow-sm">
                         <img :src="getImageUrl(category.image)" class="card-img-top" alt="Category Image">
                         <div class="card-body text-center">
                             <h5 class="card-title">{{ category.name }}</h5>
-                            <a :href="category.link" class="btn btn-category">Shop Now</a>
+                            <a :href="category.link" class="btn btn-category" @click="fetchProductsByCategory(category.id)">Shop Now</a>
                         </div>
                     </div>
                 </div>
             </div>
+             <p v-else class="er">
+                    sub categories not found
+                </p>
         </div>
     </section>
 </div>
 </template>
 
 <script>
-import {ref,onMounted,computed} from 'vue';
-import {fetchCategories} from '@/utils/Helper';
-import {getImageUrl} from '@/utils/Helper.js';
-
+import {
+    ref,
+    onMounted
+} from 'vue';
+import {
+    getImageUrl
+} from '@/utils/Helper';
+import {
+    useRoute
+} from 'vue-router';
+import apiClient from '@/service/Index';
 export default {
-    name: 'Index',
+    name: 'SubCategories',
     setup() {
-        const categories = ref([]);
-        const selectedCategory = ref('');
-        let loading = ref(true);
-        const allCategories = computed(() => categories.value);
-        onMounted(async () => {
+        const router = useRoute();
+        const searchQuery = ref('');
+        const loading = ref(true);
+        const categorySlug = router.params.categorySlug; // Get categorySlug
+        const categoryId = router.params.categoryId;
+        const subCategories = ref([]);
+        const fetchSubCategories = async () => {
             try {
-                categories.value = await fetchCategories();
-                loading.value = false;
+                const responseSubCategories = await apiClient.get(`fetch-sub-caregory/${categoryId}`);
+                if (responseSubCategories.data.success) {
+                    subCategories.value = responseSubCategories.data.subcategory;
+                    loading.value = false;
+                }
             } catch (error) {
-                console.error('Error fetching categories:', error);
+                console.log('something wrong');
             }
+        };
+        const fetchProductsByCategory = (catId) => {
+            console.log(catId);
+            alert(`hey!! this is fetch product function ${catId}`);
+        };
+        const searchCategory = () => {
+            setTimeout(() => {
+                const value = searchQuery.value;
+                console.log(value);
+            },2000);
+        }
+        onMounted(() => {
+            fetchSubCategories();
         });
-       
-        // const applyFilters = () => {
-        //     categories.value = selectedCategory.value;
-        // }
         return {
-            categories,
+            subCategories,
+            categorySlug,
+            categoryId,
             getImageUrl,
             loading,
-            allCategories,
-
-            selectedCategory,
+            fetchProductsByCategory,
+            searchCategory,
+            searchQuery,
         };
     }
 
-};
+}
 </script>
 
 <style scoped>
-/* Filter and Search Section */
-.filters-search {
-    background-color: #f7f7f7;
-    padding: 20px 0;
-}
-
-.filters-search input {
-    font-size: 1rem;
-    padding: 0.75rem 1.5rem;
-    border-radius: 30px;
-    border: 1px solid #ccc;
-}
-
-.filters-search .form-select {
-    font-size: 1rem;
-    padding: 0.75rem 1.5rem;
-    border-radius: 30px;
-    border: 1px solid #ccc;
-}
-
-/* Category Section */
-.categories {
-    background-color: #f7f7f7;
-}
-
-.card.category-card {
-    border: none;
-    border-radius: 15px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.card.category-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-}
-
-.card-img-top {
-    border-radius: 15px 15px 0 0;
-    object-fit: cover;
-    height: 200px;
-}
-
-.card-body {
-    padding: 1.5rem;
-    background-color: #fff;
-}
-
-.card-title {
-    font-size: 1.3rem;
-    font-weight: 600;
-    color: #333;
-}
-
-.card-text {
-    color: #777;
-    font-size: 0.9rem;
+section.categories.py-5 {
+    /* padding-top: 208px; */
+    margin-top: 53px;
+    margin-bottom: 136px;
 }
 
 .btn-category {
@@ -201,19 +166,20 @@ export default {
 }
 
 .btn-category:hover {
-    background-color: #0056b3;
-    border-color: #004085;
+    background-color: #28a745;
+    border-color: #28a745;
 }
 
-.categories h2 {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #444;
-}
-
+/* .btn-category[data-v-636ec3fa] {
+    background-color: #28a745;
+    border-color: #28a745;
+    transition: background-color 0.3s;
+} */
 section.categories.py-5 {
-    margin-top: 58px;
-    padding-bottom: 167px !important;
-    padding-top: 49px !important;
+    background-color: azure;
+}
+img.card-img-top {
+    width: 300px;
+    height: 201px;
 }
 </style>

@@ -54,7 +54,7 @@
               <img :src="getImageUrl(category.image)" class="card-img-top" alt="Category Image">
               <div class="card-body text-center">
                 <h5 class="card-title">{{ category.name }}</h5>
-                <a :href="category.link" class="btn btn-primary" @click="handleFetchSubCategory(category.id)">Shop Now</a>
+                <a :href="category.link" class="btn btn-primary" @click="handleFetchSubCategory(category.slug,category.id)">Shop Now</a>
               </div>
             </div>
           </div>
@@ -97,45 +97,43 @@
 import { ref,onMounted} from 'vue';
 import apiClient from '@/service/Index';
 import {getImageUrl} from '@/utils/Helper.js';
-
+import { fetchCategories } from '@/utils/Helper.js';
+import { useRouter } from 'vue-router';
 export default {
     name:'HomePage',
     setup(){
       // Reactive state
       const categories = ref([]);
+      const router = useRouter();
+
       
       let loading = ref(true);
       const products = ref([
-        { id: 1, name: 'Product 1', description: 'Description for product 1', price: 99.99, image: '@/assets/img1.webp' },
-        { id: 2, name: 'Product 2', description: 'Description for product 2', price: 199.99, image: '@/assets/img1.webp' },
-        { id: 3, name: 'Product 3', description: 'Description for product 3', price: 299.99, image: 'https://via.placeholder.com/150' },
-        { id: 4, name: 'Product 4', description: 'Description for product 4', price: 79.99, image: 'https://via.placeholder.com/150' },
+        { id: 1, name: 'Product 1', description: 'Description for product 1', price: 99.99  },
+        { id: 2, name: 'Product 2', description: 'Description for product 2', price: 199.99 },
+        { id: 3, name: 'Product 3', description: 'Description for product 3', price: 299.99},
+        { id: 4, name: 'Product 4', description: 'Description for product 4', price: 79.99 },
       ]);
       onMounted (async() => {
-        fetchCategories();
-
-      });
-      const fetchCategories = async ()=> {
         try {
-          const response = await apiClient.get('/fetch-categories');
-          if (response.data.success) {
-            loading.value= false;
-            categories.value = response.data.allCategories;
-          }
+          categories.value = await fetchCategories();
+          loading.value = false;
         } catch (error) {
           console.error('Error fetching categories:', error);
+           loading.value = false;
         }
-      };
-      const  handleFetchSubCategory = async (productId) => {
+      });
+      const  handleFetchSubCategory = async (categorySlug,categoryId) => {
 
         try {
-          const responseSubCategory = await apiClient.get(`fetch-sub-caregory/${productId}`);
+          const responseSubCategory = await apiClient.get(`fetch-sub-caregory/${categoryId}`);
           if(responseSubCategory.data.success)
           {
-              console.log(responseSubCategory.data);
-              
+            router.push({ name: 'sub-categories',  params: { categorySlug, categoryId } });
+            // console.log(responseSubCategory.data);
           }
         } catch (error) {
+          alert('This category does not have sub-categories');
           console.log('something wrong' , error);
         }
 

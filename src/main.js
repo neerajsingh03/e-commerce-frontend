@@ -8,8 +8,7 @@ import store from '@/store/Index.js';
 import apiClient  from './service/Index';
 
 apiClient.interceptors.request.use((config) => {
-    const token = store.getters.getToken;
-
+    const token = store.getters['auth/getToken'];
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }

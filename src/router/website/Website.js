@@ -1,3 +1,5 @@
+
+
 const websiteRoute = [
     {   path: '/',
         name: 'Home',
@@ -22,6 +24,13 @@ const websiteRoute = [
         path: '/deal',
         name: 'deal',
         component: () => import('@/pages/website/deals/Index.vue')
+    },
+    {
+
+        path: '/sub-categories/:categorySlug/:categoryId',
+        name: 'sub-categories',
+        props: true,
+        component: () => import('@/pages/website/categories/SubCategories.vue')
     },
 ]
 export default websiteRoute;
