@@ -49,7 +49,7 @@
                 </div>
                 <!-- Category Filter -->
                 <div class="col-lg-4">
-                    <select class="form-select" v-model="selectedCategory" @change="applyFilters">
+                    <select class="form-select" @change="applyFilters">
                         <option value="">All Categories</option>
                         <option v-for="category in allCategories" :key="category.id" :value="category.id">
                             {{ category.name }}
@@ -105,6 +105,7 @@ export default {
     setup() {
         const router = useRoute();
         const searchQuery = ref('');
+        const allCategories = ref([]);
         const loading = ref(true);
         const categorySlug = router.params.categorySlug; // Get categorySlug
         const categoryId = router.params.categoryId;
@@ -114,6 +115,7 @@ export default {
                 const responseSubCategories = await apiClient.get(`fetch-sub-caregory/${categoryId}`);
                 if (responseSubCategories.data.success) {
                     subCategories.value = responseSubCategories.data.subcategory;
+                    allCategories.value =  responseSubCategories.data.subcategory;
                     loading.value = false;
                 }
             } catch (error) {
@@ -130,7 +132,7 @@ export default {
                 console.log(value);
             },2000);
         }
-        
+
         onMounted(() => {
             fetchSubCategories();
         });
@@ -143,6 +145,7 @@ export default {
             fetchProductsByCategory,
             searchCategory,
             searchQuery,
+            allCategories
         };
     }
 
