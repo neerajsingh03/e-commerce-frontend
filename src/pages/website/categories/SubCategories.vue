@@ -49,7 +49,7 @@
                 </div>
                 <!-- Category Filter -->
                 <div class="col-lg-4">
-                    <select class="form-select" @change="applyFilters">
+                    <select class="form-select" v-model="selectedCategory" @change="applyFilters">
                         <option value="">All Categories</option>
                         <option v-for="category in allCategories" :key="category.id" :value="category.id">
                             {{ category.name }}
@@ -66,11 +66,11 @@
     </div>
     <!-- Categories Grid Section -->
     <section class="categories py-5">
-        <div class="container">
+        <div class="container" v-if="filterSubCategories.length > 0">
             <h2 class="text-center mb-5">Shop by Categories</h2>
-            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4" v-if="subCategories.length > 0">
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
                 <!-- Category Item -->
-                <div class="col" v-for="category in subCategories" :key="category.id">
+                <div class="col" v-for="category in filterSubCategories" :key="category.id">
                     <div class="card category-card shadow-sm">
                         <img :src="getImageUrl(category.image)" class="card-img-top" alt="Category Image">
                         <div class="card-body text-center">
@@ -80,25 +80,18 @@
                     </div>
                 </div>
             </div>
-             <p v-else class="er">
-                    sub categories not found
-                </p>
         </div>
+        <h3 v-else class="er text-center text-danger">
+            No subcategories found.
+        </h3>
     </section>
 </div>
 </template>
 
 <script>
-import {
-    ref,
-    onMounted
-} from 'vue';
-import {
-    getImageUrl
-} from '@/utils/Helper';
-import {
-    useRoute
-} from 'vue-router';
+import {ref,onMounted,computed} from 'vue';
+import {getImageUrl} from '@/utils/Helper';
+import {useRoute} from 'vue-router';
 import apiClient from '@/service/Index';
 export default {
     name: 'SubCategories',
@@ -106,10 +99,12 @@ export default {
         const router = useRoute();
         const searchQuery = ref('');
         const allCategories = ref([]);
+        const selectedCategory = ref('');
         const loading = ref(true);
-        const categorySlug = router.params.categorySlug; // Get categorySlug
+        const categorySlug = router.params.categorySlug; 
         const categoryId = router.params.categoryId;
         const subCategories = ref([]);
+         
         const fetchSubCategories = async () => {
             try {
                 const responseSubCategories = await apiClient.get(`fetch-sub-caregory/${categoryId}`);
@@ -119,20 +114,27 @@ export default {
                     loading.value = false;
                 }
             } catch (error) {
-                console.log('something wrong');
+                console.error('Error fetching subcategories:', error);
+                // loading.value = false;
             }
         };
         const fetchProductsByCategory = (catId) => {
             console.log(catId);
             alert(`hey!! this is fetch product function ${catId}`);
         };
-        const searchCategory = () => {
-            setTimeout(() => {
-                const value = searchQuery.value;
-                console.log(value);
-            },2000);
-        }
-
+        const filterSubCategories = computed (() => {
+           
+            const filtered = subCategories.value.filter((subCategory) => {
+                const searchCategory  = subCategory.name.toLowerCase().includes(searchQuery.value.toLowerCase());
+                const matchCategory  = selectedCategory.value ? subCategory.id === Number(selectedCategory.value) : true;
+                return searchCategory && matchCategory;
+            });
+            if (filtered.length === 0 && !searchQuery.value && !selectedCategory.value) {
+                return [];
+            }
+            return filtered;
+        });
+        
         onMounted(() => {
             fetchSubCategories();
         });
@@ -143,12 +145,12 @@ export default {
             getImageUrl,
             loading,
             fetchProductsByCategory,
-            searchCategory,
             searchQuery,
-            allCategories
+            allCategories,
+            filterSubCategories,
+            selectedCategory,        
         };
     }
-
 }
 </script>
 
