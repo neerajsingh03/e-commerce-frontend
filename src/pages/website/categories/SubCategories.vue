@@ -130,6 +130,7 @@ export default {
                 console.log(value);
             },2000);
         }
+        
         onMounted(() => {
             fetchSubCategories();
         });
