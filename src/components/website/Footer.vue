@@ -18,5 +18,7 @@ export default {
 </script>
 
 <style scoped>
-/* Add any custom footer styles */
+footer {
+  margin-top: auto; /* This makes the footer stick to the bottom */
+}
 </style>

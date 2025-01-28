@@ -64,9 +64,12 @@
             <span class="visually-hidden">Loading...</span>
         </div>
     </div>
+    <div v-if="errorMessage && errorMessage.trim() !== ''" class="alert alert-danger text-center">
+        {{ errorMessage }}
+    </div>
     <!-- Categories Grid Section -->
     <section class="categories py-5">
-        <div class="container" v-if="filterSubCategories.length > 0">
+        <div class="container" v-if="!loading && filterSubCategories.length > 0">
             <h2 class="text-center mb-5">Shop by Categories</h2>
             <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
                 <!-- Category Item -->
@@ -81,7 +84,7 @@
                 </div>
             </div>
         </div>
-        <h3 v-else class="er text-center text-danger">
+        <h3 v-else-if="!loading" class="er text-center text-danger">
             No subcategories found.
         </h3>
     </section>
@@ -91,36 +94,52 @@
 <script>
 import {ref,onMounted,computed} from 'vue';
 import {getImageUrl} from '@/utils/Helper';
-import {useRoute} from 'vue-router';
+import {useRoute,useRouter} from 'vue-router';
 import apiClient from '@/service/Index';
 export default {
     name: 'SubCategories',
     setup() {
-        const router = useRoute();
+        const route = useRoute();
+        const router = useRouter();
         const searchQuery = ref('');
         const allCategories = ref([]);
         const selectedCategory = ref('');
         const loading = ref(true);
-        const categorySlug = router.params.categorySlug; 
-        const categoryId = router.params.categoryId;
+        const categoryId = route.params.categoryId;
         const subCategories = ref([]);
+        const errorMessage = ref('');
          
         const fetchSubCategories = async () => {
             try {
-                const responseSubCategories = await apiClient.get(`fetch-sub-caregory/${categoryId}`);
+                const responseSubCategories = await apiClient.get(`fetch-sub-category/${categoryId}`);
                 if (responseSubCategories.data.success) {
                     subCategories.value = responseSubCategories.data.subcategory;
                     allCategories.value =  responseSubCategories.data.subcategory;
                     loading.value = false;
                 }
+                else {
+                    throw new Error('Failed to load subcategories. Please try again later.');
+                }
             } catch (error) {
                 console.error('Error fetching subcategories:', error);
-                // loading.value = false;
+                errorMessage.value = 'There was an issue loading the subcategories. Please try again later.';
+                loading.value = false;
             }
         };
-        const fetchProductsByCategory = (catId) => {
-            console.log(catId);
-            alert(`hey!! this is fetch product function ${catId}`);
+        const fetchProductsByCategory = async (catId) => {
+            try {
+                const responseProduct = await apiClient.get(`fetch-porduct/${catId}`);
+                if(responseProduct.data && responseProduct.data.success){
+                    router.push({ name: 'product', params: { subCatId: catId } });
+                    console.log(responseProduct.data);
+                } else {
+                    throw new Error('No products available for this category.');
+                }
+            } catch (error) {
+                errorMessage.value = 'Sorry, there are no products available for this category.';
+                console.error('Error fetching products:', error);
+            }
+            
         };
         const filterSubCategories = computed (() => {
            
@@ -140,7 +159,6 @@ export default {
         });
         return {
             subCategories,
-            categorySlug,
             categoryId,
             getImageUrl,
             loading,
@@ -148,7 +166,8 @@ export default {
             searchQuery,
             allCategories,
             filterSubCategories,
-            selectedCategory,        
+            selectedCategory,
+            errorMessage        
         };
     }
 }
@@ -187,5 +206,9 @@ section.categories.py-5 {
 img.card-img-top {
     width: 300px;
     height: 201px;
+}
+h3.er.text-center.text-danger {
+    margin-top: 67px;
+    margin-bottom: 51px;
 }
 </style>

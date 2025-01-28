@@ -77,7 +77,7 @@ export default {
                 if (response.data.success) {
                     formData.name = '';
                     formData.image = null;
-                     document.getElementById('categoryImage').value = '';
+                    document.getElementById('categoryImage').value = '';
                     alert('Category added successfully');
                 }
 

@@ -42,4 +42,13 @@ export default {
 
  @import '@/assets/css/bootstrap.min.css';
 @import '@/assets/css/style.css';
+html, body {
+  height: 100%;
+  margin: 0;
+}
+#app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
 </style>

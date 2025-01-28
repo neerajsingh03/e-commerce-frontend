@@ -26,11 +26,16 @@ const websiteRoute = [
         component: () => import('@/pages/website/deals/Index.vue')
     },
     {
-
         path: '/sub-categories/:categorySlug/:categoryId',
         name: 'sub-categories',
         props: true,
         component: () => import('@/pages/website/categories/SubCategories.vue')
     },
+    {
+        path:'/product/:subCatId',
+        name: 'product',
+        props: true,
+        component: () => import('@/pages/website/products/Index.vue'),
+    }
 ]
 export default websiteRoute;

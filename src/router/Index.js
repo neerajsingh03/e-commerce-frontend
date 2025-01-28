@@ -4,9 +4,9 @@ import Cookies from "js-cookie";
 import categoriesRoute   from '@/router/admin/Categories.js';
 import Auth              from         '@/router/auth/Auth.js';
 import websiteRoute     from '@/router/website/Website';
-
+import productRoutes from '@/router/admin/Products.js';
 let routes = [];
-routes = routes.concat(Auth,websiteRoute,categoriesRoute);
+routes = routes.concat(Auth,websiteRoute,categoriesRoute,productRoutes);
 
 const router = createRouter({
     history:createWebHistory(),

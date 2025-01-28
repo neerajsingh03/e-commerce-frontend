@@ -22,7 +22,12 @@
                     <div class="dropdown-menu bg-transparent border-0">
                         <router-link to="/category" class="dropdown-item">Category</router-link>
                         <router-link to="/sub-category" class="dropdown-item">Sub Category</router-link>
-                        <!-- <a href="element.html" class="dropdown-item">Other Elements</a> -->
+                    </div>
+                </div>
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-laptop me-2"></i>Products Section</a>
+                    <div class="dropdown-menu bg-transparent border-0">
+                        <router-link to="/add-product" class="dropdown-item">Category</router-link>
                     </div>
                 </div>
                 <!-- <a href="widget.html" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Widgets</a>

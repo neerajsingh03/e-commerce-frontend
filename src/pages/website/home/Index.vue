@@ -126,7 +126,7 @@ export default {
       const  handleFetchSubCategory = async (categorySlug,categoryId) => {
 
         try {
-          const responseSubCategory = await apiClient.get(`fetch-sub-caregory/${categoryId}`);
+          const responseSubCategory = await apiClient.get(`fetch-sub-category/${categoryId}`);
           if(responseSubCategory.data.success)
           {
             router.push({ name: 'sub-categories',  params: { categorySlug, categoryId } });
