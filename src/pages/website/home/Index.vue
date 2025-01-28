@@ -97,7 +97,6 @@
 import { ref,onMounted} from 'vue';
 import apiClient from '@/service/Index';
 import {getImageUrl} from '@/utils/Helper.js';
-import { fetchCategories } from '@/utils/Helper.js';
 import { useRouter } from 'vue-router';
 export default {
     name:'HomePage',
@@ -114,15 +113,25 @@ export default {
         { id: 3, name: 'Product 3', description: 'Description for product 3', price: 299.99},
         { id: 4, name: 'Product 4', description: 'Description for product 4', price: 79.99 },
       ]);
-      onMounted (async() => {
-        try {
-          categories.value = await fetchCategories();
-          loading.value = false;
-        } catch (error) {
-          console.error('Error fetching categories:', error);
-           loading.value = false;
-        }
-      });
+      onMounted(() => {
+            fetchCategories();
+        });
+        const fetchCategories = async ()=> {
+            try {
+            const response = await apiClient.get('/fetch-categories');
+            if (response.data.success) {
+                loading.value= false;
+                categories.value = response.data.allCategories;
+            }
+            else {
+                throw new Error('Failed to fetch categories');
+            }
+            } catch (error) {
+            console.error('Error fetching categories:', error);
+                loading.value= false;
+            throw error;
+            }
+        };
       const  handleFetchSubCategory = async (categorySlug,categoryId) => {
 
         try {
@@ -142,11 +151,11 @@ export default {
       };
        return {
         products,
-        // categories,
         categories,
         getImageUrl,
         loading,
-        handleFetchSubCategory
+        handleFetchSubCategory,
+        fetchCategories
       };
     }
 }

@@ -96,9 +96,8 @@
 
 <script>
 import {ref,onMounted,computed} from 'vue';
-import {fetchCategories} from '@/utils/Helper';
 import {getImageUrl} from '@/utils/Helper.js';
-
+import apiClient from '@/service/Index';
 export default {
     name: 'Index',
     setup() {
@@ -106,24 +105,32 @@ export default {
         const selectedCategory = ref('');
         let loading = ref(true);
         const allCategories = computed(() => categories.value);
-        onMounted(async () => {
-            try {
-                categories.value = await fetchCategories();
-                loading.value = false;
-            } catch (error) {
-                console.error('Error fetching categories:', error);
-            }
+  
+        onMounted(() => {
+            fetchCategories();
         });
-       
-        // const applyFilters = () => {
-        //     categories.value = selectedCategory.value;
-        // }
+        const fetchCategories = async ()=> {
+            try {
+            const response = await apiClient.get('/fetch-categories');
+            if (response.data.success) {
+                loading.value= false;
+                categories.value = response.data.allCategories;
+            }
+            else {
+                throw new Error('Failed to fetch categories');
+            }
+            } catch (error) {
+            console.error('Error fetching categories:', error);
+                loading.value= false;
+            throw error;
+            }
+        };
         return {
             categories,
             getImageUrl,
             loading,
             allCategories,
-
+            fetchCategories,
             selectedCategory,
         };
     }
