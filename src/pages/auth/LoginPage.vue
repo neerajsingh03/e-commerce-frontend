@@ -44,6 +44,7 @@ export default {
             try {
                 const response = await apiClient.post('/login', formData.value);
                 if (response.data && response.data.token && response.data.role) {
+                    alert('Login successfully');
                     store.dispatch('auth/login', {
                         token: response.data.token,
                         role: response.data.role,

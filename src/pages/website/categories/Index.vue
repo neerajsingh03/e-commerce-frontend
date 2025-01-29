@@ -59,13 +59,17 @@
             </div>
         </div>
     </section>
+    <div v-if="errorMessage && errorMessage.trim() !== ''" class="alert alert-danger text-center">
+        {{ errorMessage }}
+    </div>
     <div v-if="loading" class="text-center">
         <div class="spinner-border text-primary" role="status">
             <span class="visually-hidden">Loading...</span>
         </div>
     </div>
     <!-- Categories Grid Section -->
-    <section class="categories py-5">
+
+    <section class="categories py-5" v-if="categories.length > 0">
         <div class="container">
             <h2 class="text-center mb-5">Shop by Categories</h2>
             <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
@@ -84,13 +88,16 @@
                         <img :src="getImageUrl(category.image)" class="card-img-top" alt="Category Image">
                         <div class="card-body text-center">
                             <h5 class="card-title">{{ category.name }}</h5>
-                            <a :href="category.link" class="btn btn-category">Shop Now</a>
+                                <a href="javascript:void(0)" class="btn btn-primary" @click.prevent="handleFetchSubCategory(category.slug,category.id)">Shop Now</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+     <h3 v-else-if="!loading" class="er text-center text-danger">
+        No Categoires found.
+    </h3>
 </div>
 </template>
 
@@ -98,12 +105,16 @@
 import {ref,onMounted,computed} from 'vue';
 import {getImageUrl} from '@/utils/Helper.js';
 import apiClient from '@/service/Index';
+import {useRouter} from 'vue-router';
+
 export default {
     name: 'Index',
     setup() {
         const categories = ref([]);
         const selectedCategory = ref('');
+        const router           = useRouter();
         let loading = ref(true);
+        const errorMessage = ref('');
         const allCategories = computed(() => categories.value);
   
         onMounted(() => {
@@ -125,6 +136,21 @@ export default {
             throw error;
             }
         };
+
+       const  handleFetchSubCategory = async (categorySlug,categoryId) => {
+            
+        try {
+          const responseSubCategory = await apiClient.get(`fetch-sub-category/${categoryId}`);
+          if(responseSubCategory.data.success)
+          {
+            router.push({ name: 'sub-categories',  params: { categorySlug, categoryId } });
+            // console.log(responseSubCategory.data);
+          }
+        } catch (error) {
+          alert('This category does not have sub-categories');
+          console.log('something wrong' , error);
+        }
+      };
         return {
             categories,
             getImageUrl,
@@ -132,6 +158,8 @@ export default {
             allCategories,
             fetchCategories,
             selectedCategory,
+            handleFetchSubCategory,
+            errorMessage
         };
     }
 

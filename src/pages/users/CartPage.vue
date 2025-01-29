@@ -2,19 +2,26 @@
 <div class="cart-page">
     <div class="container py-5">
         <h2 class="text-center mb-5">Your Shopping Cart</h2>
-
-        <div class="row">
+        <div class="loader">
+            <div v-if="loading" class="text-center">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+        <div class="row" v-if="cartProducts.length > 0">
             <!-- Cart Items -->
-            <div class="col-md-8">
-                <div class="cart-items">
-                    <div class="cart-item" v-for="(item, index) in cartItems" :key="item.id">
-                        <div class="row align-items-center">
+            <div class="col-md-8" >
+                <div class="cart-items"  v-for="(cart, index) in cartProducts" :key="cart.id">
+                    <div class="cart-item"  v-for="item in cart.items" :key="item.id">
+                        <div class="row align-items-center" >
                             <div class="col-3">
-                                <img src="../../assets/loginImg.jpg" class="img-fluid cart-item-image" alt="Product Image">
+                                <!-- <img :src="getImageUrl(item.prodcut.image)" class="img-fluid cart-item-image" alt="Product Image"> -->
+                                 <img :src="getImageUrl(item.product.image)" class="card-img-top product-image" alt="Product Image">
                             </div>
                             <div class="col-6">
-                                <h5 class="cart-item-title">{{ item.name }}</h5>
-                                <p class="cart-item-description">{{ item.description }}</p>
+                                <h5 class="cart-item-title">{{ item.product.name }}</h5>
+                                <p class="cart-item-description">{{ item.product.description }}</p>
                                 <p class="cart-item-price">${{ item.price }}</p>
                             </div>
                             <div class="col-3">
@@ -29,7 +36,6 @@
                     </div>
                 </div>
             </div>
-
             <!-- Cart Summary -->
             <div class="col-md-4">
                 <div class="cart-summary">
@@ -42,60 +48,68 @@
                 </div>
             </div>
         </div>
+        <div class="empty-cart" v-else-if="!loading">
+            <div class="empty-cart-container">
+                <div class="empty-cart-icon">
+                    <img src="@/assets/empty-cart.jpg" alt="Empty Cart" class="img-fluid" />
+                </div>
+                <div class="empty-cart-message">
+                    <h3>Your Cart is Empty</h3>
+                    <p>Looks like you haven't added any items to your cart yet.</p>
+                    <p>Don't worry, you can start shopping now!</p>
+                </div>
+                <div class="empty-cart-action">
+                    <button class="btn btn-primary" @click="redirectToShop">Go to Shop</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 </template>
 
 <script>
+import {useStore} from 'vuex';
+import {ref,onMounted,computed} from 'vue';
+import apiClient from '@/service/Index';
+import {getImageUrl} from '@/utils/Helper';
 export default {
     name: 'CartPage',
-    data() {
-        return {
-            cartItems: [{
-                    id: 1,
-                    name: 'Product 1',
-                    description: 'Description for product 1',
-                    price: 99.99,
-                    quantity: 1,
-                    image: 'https://via.placeholder.com/150',
-                },
-                {
-                    id: 2,
-                    name: 'Product 2',
-                    description: 'Description for product 2',
-                    price: 199.99,
-                    quantity: 1,
-                    image: 'https://via.placeholder.com/150',
-                },
-                // Add more items as needed
-            ]
-        };
-    },
-    computed: {
-        totalItems() {
-            return this.cartItems.reduce((total, item) => total + item.quantity, 0);
-        },
-        totalPrice() {
-            return this.cartItems.reduce((total, item) => total + item.price * item.quantity, 0).toFixed(2);
-        }
-    },
-    methods: {
-        increaseQuantity(index) {
-            this.cartItems[index].quantity++;
-        },
-        decreaseQuantity(index) {
-            if (this.cartItems[index].quantity > 1) {
-                this.cartItems[index].quantity--;
+    setup(){
+        const store = new useStore();
+        const userId = computed(() => store.getters['auth/getUserId']);
+        const token = computed(() => store.getters['auth/getToken']);
+        const cartProducts = ref([]);
+        const loading = ref(false);
+        const fetchUserProducts = async ()=> {
+            if(token.value){
+                loading.value= true;
+                try {
+                    const response = await apiClient.get(`/user-cart-products/${userId.value}`);
+                    if(response.data && response.data.success && response.data.cartProducts){
+                        cartProducts.value =  response.data.cartProducts;
+                        loading.value = false;
+                        console.log(response);
+                    }
+                } catch (error) {
+                    console.log('Sorry, there are no products available for this user' ,error);
+                        loading.value = false;
+                }
+            }else {
+                console.log('No token found, cannot fetch cart data.');
+                loading.value = false;
             }
-        },
-        removeItem(index) {
-            this.cartItems.splice(index, 1);
-        },
-        proceedToCheckout() {
-            // Logic for proceeding to checkout
-            alert('Proceeding to checkout!');
+        }
+        onMounted (() => {
+            fetchUserProducts();
+          
+        });
+        return {
+            cartProducts,
+            getImageUrl,
+            loading,
         }
     }
+
 };
 </script>
 
@@ -228,4 +242,63 @@ export default {
     margin-top: 56px;
     padding-bottom: 166px;
 }
+img.card-img-top.product-image {
+    max-height: 174px;
+}
+.empty-cart {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 32vh;
+    text-align: center;
+    background-color: #f9f9f9;
+    padding: 20px;
+}
+
+.empty-cart-container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    width: 100%;
+}
+
+.empty-cart-icon img {
+    width: 120px;
+    height: 120px;
+    object-fit: contain;
+    margin-bottom: 20px;
+}
+
+.empty-cart-message h3 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.empty-cart-message p {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.empty-cart-action {
+    margin-top: 20px;
+}
+
+.empty-cart-action .btn {
+    font-size: 1rem;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease;
+}
+
+.empty-cart-action .btn:hover {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
 </style>

@@ -105,7 +105,7 @@
 </template>
 
 <script>
-import {ref,onMounted, computed} from 'vue';
+import {ref,onMounted,computed} from 'vue';
 import {useRoute,useRouter } from 'vue-router'
 import apiClient from '@/service/Index';
 import {getImageUrl} from '@/utils/Helper';
@@ -116,7 +116,7 @@ export default {
     setup() {
         const route = useRoute();
         const router = useRouter();
-         const store = useStore();
+        const store = useStore();
         const id = route.params.subCatId;
         const products = ref([]);
         const loading = ref(true);
@@ -133,12 +133,26 @@ export default {
             }
         }
         const token = computed(() => store.getters['auth/getToken']);
-        const handleAddToCart = (id) => {
-            if(token.value) {
-                 alert(`Cart added successfully. Product ID: ${id}`);
-            }else{
-                 alert('Please log in to add items to the cart.');
-                router.push({ name: 'Login' });
+        const handleAddToCart = async (id) => {
+            console.log(`this is guest user ${id}`);
+            if (!token.value) {
+                alert('Please log in to add items to the cart.');
+                return router.push({ name: 'Login' });
+            }
+            try {
+                const responseAddToCart = await apiClient.post('/add-to-cart', { productId: id });
+                if (responseAddToCart?.data) {
+                    console.log('Cart Response:', responseAddToCart.data);
+                    alert(responseAddToCart.data.message);
+                    if (responseAddToCart.data.message !== 'Product is already in the cart.') {
+                        alert(responseAddToCart.data.message);  // Only show alert if the message is not 'already in cart'
+                    }
+                    return router.push({ name: 'Cart' });
+                }
+            } catch (error) {
+
+                console.error('Error adding to cart:', error);
+                alert('Failed to add item to cart. Please try again.');
             }
         }
         onMounted(() => {

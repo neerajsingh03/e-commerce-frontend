@@ -29,7 +29,7 @@
                         <router-link class="nav-link" to="/deal">Deals</router-link>
                     </li>
                     <li class="nav-item">
-                        <router-link class="nav-link" to="/cart">Cart</router-link>
+                        <router-link class="nav-link" to="/cart">Cart{{countUserItems}}</router-link>
                     </li>
                     <li class="nav-item">
                         <router-link class="nav-link" to="/login" v-if="!token">Login</router-link>
@@ -57,7 +57,7 @@
 <script>
 import apiClient from '@/service/Index';
 import { useStore } from 'vuex';
-import { computed } from 'vue';
+import { ref,computed,onMounted,watch } from 'vue';
 import { useRouter } from 'vue-router';
 export default {
     name: 'HeaderSection',
@@ -65,6 +65,7 @@ export default {
     setup() {
         const store = useStore();
         const router = useRouter();
+        const countUserItems = ref('');
         const handleLogout = async () => {
             try {
                 const response = await apiClient.post('/logout');
@@ -75,15 +76,38 @@ export default {
                     alert('Logout successfully');
                 }
             } catch (error) {
-                
-               console.log('something wrong',error);
+                console.log('Something went wrong during logout:', error);
             }
 
         };
         const token = computed(() => store.getters['auth/getToken']);
+        const handleCountUserCartItems = async ()=> {
+            try {
+                const responseCountUserCartItems = await apiClient.get('/user-cart-items');
+                if(responseCountUserCartItems){
+                    countUserItems.value = responseCountUserCartItems.data.count;
+                    console.log(responseCountUserCartItems);
+                }
+            } catch (error) {
+                 console.log('Error fetching user cart items:', error);
+            }
+        }
+        onMounted(() => {
+            if(token.value){
+                handleCountUserCartItems();
+            }
+        });
+         watch(token, (newToken) => {
+            if (newToken) {
+                handleCountUserCartItems();
+            } else {
+                countUserItems.value = '';
+            }
+        });
         return {
             handleLogout,
             token, 
+            countUserItems,
         }
     }
 };
