@@ -211,4 +211,17 @@ h3.er.text-center.text-danger {
     margin-top: 67px;
     margin-bottom: 51px;
 }
+.filters-search {
+    background-color: #f7f7f7;
+    padding: 20px 0;
+}
+
+.filters-search input,
+.filters-search .form-select {
+    font-size: 1rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 30px;
+    border: 1px solid #ccc;
+    width: 100%;
+}
 </style>

@@ -1,8 +1,10 @@
 import { createStore } from 'vuex';
 import auth from './modules/auth';
+import userCart from './modules/userCart';
 const store = createStore ({
     modules:{
         auth,
+        userCart,
     }
     // state: {
     //     token: Cookies.get('token') ? Cookies.get('token') : null,

@@ -159,140 +159,206 @@ export default {
       };
     }
 }
-
-
-
-
-
 </script>
-
-
-
 <style scoped>
-/* Hero Section */
-.carousel-inner img {
+/* .carousel-inner img {
   max-height: 500px;
   object-fit: cover;
 }
-
 .carousel-caption {
   background-color: rgba(0, 0, 0, 0.5);
   padding: 20px;
   border-radius: 5px;
 }
-
 .carousel-control-prev-icon, .carousel-control-next-icon {
   background-color: #333;
   border-radius: 50%;
 }
-
-/* Category Section */
 .categories {
-  background-color: #f2f7fb; /* Light blue background */
+  background-color: #f2f7fb;
   padding: 50px 0;
 }
-
 .card.category-card {
   border: none;
   transition: transform 0.3s ease;
 }
-
 .card.category-card:hover {
   transform: scale(1.05);
 }
-
 .card.category-card img {
   border-radius: 10px;
   max-height: 167px;
   object-fit: cover;
 }
-
 .card-body {
   padding: 1.25rem;
   background-color: #ffffff;
   border-radius: 10px;
 }
-
 .card-title {
   font-size: 1.25rem;
   font-weight: 600;
   color: #333;
 }
-
 .btn-primary {
-  background-color: #ff5733; /* Custom orange button color */
+  background-color: #ff5733; 
   border-color: #ff5733;
   transition: background-color 0.3s;
 }
-
 .btn-primary:hover {
-  background-color: #e84c2a; /* Darker shade on hover */
+  background-color: #e84c2a;
   border-color: #d43d18;
 }
-
-/* Featured Products Section */
 .products {
-  background-color: #fff8e1; /* Light yellow background */
+  background-color: #fff8e1;
   padding: 50px 0;
 }
-
 .card.product-card {
   border: 1px solid #ddd;
   transition: transform 0.3s ease;
 }
-
 .card.product-card:hover {
   transform: translateY(-10px);
 }
-
 .card-img-top {
   max-height: 250px;
   object-fit: contain;
 }
-
 .card-body {
   padding: 1.25rem;
   background-color: #fff;
 }
-
 .card-title {
   font-size: 1.2rem;
   font-weight: 600;
   color: #333;
 }
-
 .btn-primary {
-  background-color: #28a745; /* Green button color */
+  background-color: #28a745;
   border-color: #28a745;
   transition: background-color 0.3s;
 }
-
 .btn-primary:hover {
-  background-color: #218838; /* Darker green shade on hover */
+  background-color: #218838;
   border-color: #1e7e34;
 }
-
-/* Promotional Banner */
 .promo-banner {
   background-color: #f8f9fa;
   border-radius: 5px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
-
 .promo-banner h3 {
   font-size: 2rem;
   font-weight: 600;
   color: #e74c3c;
 }
-
 .promo-banner button {
   background-color: #28a745;
   border-color: #28a745;
 }
-
+.promo-banner button:hover {
+  background-color: #218838;
+  border-color: #1e7e34;
+} */
+.carousel-inner img {
+  max-height: 500px;
+  object-fit: cover;
+}
+.carousel-caption {
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 20px;
+  border-radius: 5px;
+}
+.carousel-control-prev-icon, .carousel-control-next-icon {
+  background-color: #333;
+  border-radius: 50%;
+}
+.categories {
+  background-color: #f2f7fb;
+  padding: 50px 0;
+}
+.card.category-card {
+  border: none;
+  transition: transform 0.3s ease;
+}
+.card.category-card:hover {
+  transform: scale(1.05);
+}
+.card.category-card img {
+  border-radius: 10px;
+  max-height: 167px;
+  object-fit: cover;
+}
+.card-body {
+  padding: 1.25rem;
+  background-color: #ffffff;
+  border-radius: 10px;
+}
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+}
+.btn-primary {
+  background-color: #ff5733; 
+  border-color: #ff5733;
+  transition: background-color 0.3s;
+}
+.btn-primary:hover {
+  background-color: #e84c2a;
+  border-color: #d43d18;
+}
+.products {
+  background-color: #fff8e1;
+  padding: 50px 0;
+}
+.card.product-card {
+  border: 1px solid #ddd;
+  transition: transform 0.3s ease;
+}
+.card.product-card:hover {
+  transform: translateY(-10px);
+}
+.card-img-top {
+  max-height: 250px;
+  object-fit: contain;
+}
+.card-body {
+  padding: 1.25rem;
+  background-color: #fff;
+}
+.card-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+}
+.btn-primary {
+  background-color: #28a745; /* Green button color */
+  border-color: #28a745;
+  transition: background-color 0.3s;
+}
+.btn-primary:hover {
+  background-color: #218838; /* Darker green shade on hover */
+  border-color: #1e7e34;
+}
+.promo-banner {
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.promo-banner h3 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #e74c3c;
+}
+.promo-banner button {
+  background-color: #28a745;
+  border-color: #28a745;
+}
 .promo-banner button:hover {
   background-color: #218838;
   border-color: #1e7e34;
 }
+
 
 </style>

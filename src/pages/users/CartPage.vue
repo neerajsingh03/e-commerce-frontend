@@ -12,8 +12,10 @@
         <div class="row" v-if="cartProducts.length > 0">
             <!-- Cart Items -->
             <div class="col-md-8" >
-                <div class="cart-items"  v-for="(cart, index) in cartProducts" :key="cart.id">
-                    <div class="cart-item"  v-for="item in cart.items" :key="item.id">
+                <!-- <div class="cart-items"  v-for="(cart) in cartProducts" :key="cart.id">
+                    <div class="cart-item"  v-for="item in cart.items" :key="item.id"> -->
+                     <div class="cart-items">
+                    <div class="cart-item"  v-for="item in cartProducts" :key="item.id">
                         <div class="row align-items-center" >
                             <div class="col-3">
                                 <!-- <img :src="getImageUrl(item.prodcut.image)" class="img-fluid cart-item-image" alt="Product Image"> -->
@@ -26,11 +28,11 @@
                             </div>
                             <div class="col-3">
                                 <div class="quantity-selector">
-                                    <button class="quantity-btn" @click="decreaseQuantity(index)">-</button>
+                                    <button class="quantity-btn" @click="decreaseQuantity(item.id,decrease)">-</button>
                                     <input type="number" class="quantity-input" v-model="item.quantity" min="1" readonly />
-                                    <button class="quantity-btn" @click="increaseQuantity(index)">+</button>
+                                    <button class="quantity-btn" @click="increaseQuantity(item.id,increase)">+</button>
                                 </div>
-                                <button class="btn btn-danger mt-3" @click="removeItem(index)">Remove</button>
+                                <button class="btn btn-danger mt-3" @click="removeItem(item.id)">Remove</button>
                             </div>
                         </div>
                     </div>
@@ -41,7 +43,7 @@
                 <div class="cart-summary">
                     <h4 class="cart-summary-title">Cart Summary</h4>
                     <div class="cart-summary-item">
-                        <p>Total Items: <span>{{ totalItems }}</span></p>
+                        <p>Total Items: <span>{{ countUserItem }}</span></p>
                         <p>Total Price: <span>${{ totalPrice }}</span></p>
                     </div>
                     <button class="btn btn-primary w-100" @click="proceedToCheckout">Proceed to Checkout</button>
@@ -78,8 +80,10 @@ export default {
         const store = new useStore();
         const userId = computed(() => store.getters['auth/getUserId']);
         const token = computed(() => store.getters['auth/getToken']);
+        const countUserItem = computed(() => store.getters['userCart/getUserCartItem']);
         const cartProducts = ref([]);
         const loading = ref(false);
+        const totalPrice = ref('');
         const fetchUserProducts = async ()=> {
             if(token.value){
                 loading.value= true;
@@ -87,8 +91,8 @@ export default {
                     const response = await apiClient.get(`/user-cart-products/${userId.value}`);
                     if(response.data && response.data.success && response.data.cartProducts){
                         cartProducts.value =  response.data.cartProducts;
+                        totalPrice.value = response.data.totalPrice;
                         loading.value = false;
-                        console.log(response);
                     }
                 } catch (error) {
                     console.log('Sorry, there are no products available for this user' ,error);
@@ -98,6 +102,52 @@ export default {
                 console.log('No token found, cannot fetch cart data.');
                 loading.value = false;
             }
+        };
+        const increaseQuantity = async (id,type="increase") => {
+            try {
+                 const responseIncreaseQuantity = await apiClient.post('/increase-decrease-quantity',{
+                        cartItemId:id,
+                        type:type
+                    });
+                if(responseIncreaseQuantity?.data){
+                    
+                    await fetchUserProducts();  
+                    console.log(responseIncreaseQuantity.data);
+                }
+            } catch (error) {
+                console.log('samething wrong',error);
+            }
+           
+        };
+        const decreaseQuantity = async (id,type="decrease") => {
+           try {
+                const responseIncreaseQuantity = await apiClient.post('/increase-decrease-quantity',{
+                        cartItemId:id,
+                        type:type
+                    });
+                if(responseIncreaseQuantity?.data){
+                    await fetchUserProducts();  
+                    console.log(responseIncreaseQuantity.data);
+                }
+            } catch (error) {
+                alert('Quantity cannot be less than 1');
+                console.log('samething wrong',error);
+            }
+        }; 
+        //  remove-cart-item
+        const removeItem = async (id)  => {
+            try {
+                const responseRemoveCartItem = await apiClient.post('/remove-cart-item',{id:id})
+                if(responseRemoveCartItem?.data){
+                    const userItemCount = responseRemoveCartItem.data.count;
+                    store.dispatch('userCart/userCartItem',userItemCount);
+                     await fetchUserProducts(); 
+                        
+                }
+            } catch (error) {
+                console.log('some issue not remove cart items');
+            }
+            
         }
         onMounted (() => {
             fetchUserProducts();
@@ -107,6 +157,11 @@ export default {
             cartProducts,
             getImageUrl,
             loading,
+            increaseQuantity,
+            totalPrice,
+            decreaseQuantity,
+            removeItem,
+            countUserItem
         }
     }
 
@@ -126,6 +181,7 @@ export default {
     padding: 15px;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position:relative;
 }
 
 .cart-item .cart-item-title {
@@ -300,5 +356,10 @@ img.card-img-top.product-image {
     background-color: #007bff;
     border-color: #007bff;
 }
-
+.spinner-border.text-primary {
+    position: fixed;
+    z-index: 1;
+    top: 360px;
+    right: 970px;
+}
 </style>

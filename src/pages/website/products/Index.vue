@@ -142,7 +142,9 @@ export default {
             try {
                 const responseAddToCart = await apiClient.post('/add-to-cart', { productId: id });
                 if (responseAddToCart?.data) {
+                    const userItemCount = responseAddToCart.data.count;
                     console.log('Cart Response:', responseAddToCart.data);
+                    store.dispatch('userCart/userCartItem',userItemCount);
                     alert(responseAddToCart.data.message);
                     if (responseAddToCart.data.message !== 'Product is already in the cart.') {
                         alert(responseAddToCart.data.message);  // Only show alert if the message is not 'already in cart'
