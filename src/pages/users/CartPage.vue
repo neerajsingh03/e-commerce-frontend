@@ -11,26 +11,34 @@
         </div>
         <div class="row" v-if="cartProducts.length > 0">
             <!-- Cart Items -->
-            <div class="col-md-8" >
+            <div class="col-md-8">
                 <!-- <div class="cart-items"  v-for="(cart) in cartProducts" :key="cart.id">
                     <div class="cart-item"  v-for="item in cart.items" :key="item.id"> -->
-                     <div class="cart-items">
-                    <div class="cart-item"  v-for="item in cartProducts" :key="item.id">
-                        <div class="row align-items-center" >
+                <div class="cart-items">
+                    <div class="cart-item" v-for="item in cartProducts" :key="item.id">
+                        <div class="row align-items-center">
                             <div class="col-3">
                                 <!-- <img :src="getImageUrl(item.prodcut.image)" class="img-fluid cart-item-image" alt="Product Image"> -->
-                                 <img :src="getImageUrl(item.product.image)" class="card-img-top product-image" alt="Product Image">
+                                <img :src="getImageUrl(item.product.image)" class="card-img-top product-image" alt="Product Image">
                             </div>
                             <div class="col-6">
                                 <h5 class="cart-item-title">{{ item.product.name }}</h5>
                                 <p class="cart-item-description">{{ item.product.description }}</p>
                                 <p class="cart-item-price">${{ item.price }}</p>
                             </div>
-                            <div class="col-3">
+                            <!-- <div class="col-3">
                                 <div class="quantity-selector">
                                     <button class="quantity-btn" @click="decreaseQuantity(item.id,decrease)">-</button>
                                     <input type="number" class="quantity-input" v-model="item.quantity" min="1" readonly />
                                     <button class="quantity-btn" @click="increaseQuantity(item.id,increase)">+</button>
+                                </div>
+                                <button class="btn btn-danger mt-3" @click="removeItem(item.id)">Remove</button>
+                            </div> -->
+                            <div class="col-3">
+                                <div class="quantity-selector">
+                                    <button class="quantity-btn" @click="updateQuantity(item.id, 'decrease')">-</button>
+                                    <input type="number" class="quantity-input" v-model="item.quantity" min="1" readonly />
+                                    <button class="quantity-btn" @click="updateQuantity(item.id, 'increase')">+</button>
                                 </div>
                                 <button class="btn btn-danger mt-3" @click="removeItem(item.id)">Remove</button>
                             </div>
@@ -46,7 +54,7 @@
                         <p>Total Items: <span>{{ countUserItem }}</span></p>
                         <p>Total Price: <span>${{ totalPrice }}</span></p>
                     </div>
-                    <button class="btn btn-primary w-100" @click="proceedToCheckout">Proceed to Checkout</button>
+                    <button class="btn btn-primary w-100" :disabled="!totalPrice" @click="proceedToCheckout">Proceed to Checkout</button>
                 </div>
             </div>
         </div>
@@ -69,103 +77,76 @@
 </div>
 </template>
 
-<script>
-import {useStore} from 'vuex';
-import {ref,onMounted,computed} from 'vue';
-import apiClient from '@/service/Index';
-import {getImageUrl} from '@/utils/Helper';
-export default {
-    name: 'CartPage',
-    setup(){
-        const store = new useStore();
-        const userId = computed(() => store.getters['auth/getUserId']);
-        const token = computed(() => store.getters['auth/getToken']);
-        const countUserItem = computed(() => store.getters['userCart/getUserCartItem']);
-        const cartProducts = ref([]);
-        const loading = ref(false);
-        const totalPrice = ref('');
-        const fetchUserProducts = async ()=> {
-            if(token.value){
-                loading.value= true;
-                try {
-                    const response = await apiClient.get(`/user-cart-products/${userId.value}`);
-                    if(response.data && response.data.success && response.data.cartProducts){
-                        cartProducts.value =  response.data.cartProducts;
-                        totalPrice.value = response.data.totalPrice;
-                        loading.value = false;
-                    }
-                } catch (error) {
-                    console.log('Sorry, there are no products available for this user' ,error);
-                        loading.value = false;
+<script setup>
+    import {useStore} from 'vuex';
+    import {ref,onMounted,computed} from 'vue';
+    import apiClient from '@/service/Index';
+    import {getImageUrl} from '@/utils/Helper';
+    import router from '@/router/Index';
+
+    const store = useStore();
+    const userId = computed(() => store.getters['auth/getUserId']);
+    const token = computed(() => store.getters['auth/getToken']);
+    const countUserItem = computed(() => store.getters['userCart/getUserCartItem']);
+
+    const cartProducts = ref([]);
+    const loading = ref(false);
+    const totalPrice = ref('');
+
+    const fetchUserProducts = async () => {
+        if (token.value) {
+            loading.value = true;
+            try {
+                const response = await apiClient.get(`/user-cart-products/${userId.value}`);
+                if (response.data ?.success && response.data.cartProducts) {
+                    cartProducts.value = response.data.cartProducts;
+                    totalPrice.value = response.data.totalPrice;
                 }
-            }else {
-                console.log('No token found, cannot fetch cart data.');
+            } catch (error) {
+                console.error('Error fetching user products:', error);
+            } finally {
                 loading.value = false;
             }
-        };
-        const increaseQuantity = async (id,type="increase") => {
-            try {
-                 const responseIncreaseQuantity = await apiClient.post('/increase-decrease-quantity',{
-                        cartItemId:id,
-                        type:type
-                    });
-                if(responseIncreaseQuantity?.data){
-                    
-                    await fetchUserProducts();  
-                    console.log(responseIncreaseQuantity.data);
-                }
-            } catch (error) {
-                console.log('samething wrong',error);
-            }
-           
-        };
-        const decreaseQuantity = async (id,type="decrease") => {
-           try {
-                const responseIncreaseQuantity = await apiClient.post('/increase-decrease-quantity',{
-                        cartItemId:id,
-                        type:type
-                    });
-                if(responseIncreaseQuantity?.data){
-                    await fetchUserProducts();  
-                    console.log(responseIncreaseQuantity.data);
-                }
-            } catch (error) {
-                alert('Quantity cannot be less than 1');
-                console.log('samething wrong',error);
-            }
-        }; 
-        //  remove-cart-item
-        const removeItem = async (id)  => {
-            try {
-                const responseRemoveCartItem = await apiClient.post('/remove-cart-item',{id:id})
-                if(responseRemoveCartItem?.data){
-                    const userItemCount = responseRemoveCartItem.data.count;
-                    store.dispatch('userCart/userCartItem',userItemCount);
-                     await fetchUserProducts(); 
-                        
-                }
-            } catch (error) {
-                console.log('some issue not remove cart items');
-            }
-            
+        } else {
+            console.warn('No token found, cannot fetch cart data.');
+            loading.value = false;
         }
-        onMounted (() => {
-            fetchUserProducts();
-          
-        });
-        return {
-            cartProducts,
-            getImageUrl,
-            loading,
-            increaseQuantity,
-            totalPrice,
-            decreaseQuantity,
-            removeItem,
-            countUserItem
+    };
+
+    const updateQuantity = async (id, type) => {
+        try {
+            const response = await apiClient.post('/increase-decrease-quantity', {
+                cartItemId: id,
+                type: type,
+            });
+            if (response ?.data) {
+                await fetchUserProducts();
+                console.log(response.data);
+            }
+        } catch (error) {
+            console.error('Error updating quantity:', error);
+            if (type === 'decrease') alert('Quantity cannot be less than 1');
         }
+    };
+
+    const removeItem = async (id) => {
+        try {
+            const response = await apiClient.post('/remove-cart-item', {
+                id
+            });
+            if (response ?.data) {
+                store.dispatch('userCart/userCartItem', response.data.count);
+                await fetchUserProducts();
+            }
+        } catch (error) {
+            console.error('Error removing cart item:', error);
+        }
+    };
+    const proceedToCheckout = () => {
+        router.push('/checkout');
     }
 
-};
+    onMounted(fetchUserProducts);
 </script>
 
 <style scoped>
@@ -181,7 +162,7 @@ export default {
     padding: 15px;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    position:relative;
+    position: relative;
 }
 
 .cart-item .cart-item-title {
@@ -298,9 +279,11 @@ export default {
     margin-top: 56px;
     padding-bottom: 166px;
 }
+
 img.card-img-top.product-image {
     max-height: 174px;
 }
+
 .empty-cart {
     display: flex;
     justify-content: center;
@@ -356,6 +339,7 @@ img.card-img-top.product-image {
     background-color: #007bff;
     border-color: #007bff;
 }
+
 .spinner-border.text-primary {
     position: fixed;
     z-index: 1;

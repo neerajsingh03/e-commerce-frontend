@@ -36,6 +36,12 @@ const websiteRoute = [
         name: 'product',
         props: true,
         component: () => import('@/pages/website/products/Index.vue'),
+    },
+    {
+        path:'/checkout',
+        name: 'Checkout',
+        props: true,
+        component: () => import('@/pages/checkout/Index.vue'),
     }
 ]
 export default websiteRoute;
